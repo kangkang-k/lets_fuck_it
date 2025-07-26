@@ -1,28 +1,33 @@
 <template>
-  <div class="user">
-    <div id="show_user_info">
-      <div v-if="loading">加载中...</div>
-      <div v-else-if="error">{{ error }}</div>
+  <div class="root1">
+    <div class="user">
+      <div id="show_user_info">
+        <div v-if="loading">加载中...</div>
+        <div v-else-if="error">{{ error }}</div>
 
-      <div v-else>
-        <p>用户名: {{ userInfo.username }}</p>
-        <p>昵称: {{ userInfo.first_name }}{{ userInfo.last_name }}</p>
-        <p>邮箱: {{ userInfo.email }}</p>
+        <div v-else>
+          <p>用户名: {{ userInfo.username }}</p>
+          <p>昵称: {{ userInfo.first_name }}{{ userInfo.last_name }}</p>
+          <p>邮箱: {{ userInfo.email }}</p>
+        </div>
+      </div>
+
+      <div id="user">
+        <div id="edit_user_info">
+          <el-button type="primary" icon="el-icon-edit" circle></el-button>
+        </div>
+        <div id="user_info">
+          <el-button type="primary">ADD KEY</el-button>
+        </div>
+        <div id="logput">
+          <el-button type="danger" icon="el-icon-switch-button" circle></el-button>
+        </div>
       </div>
     </div>
-
-    <div id="user">
-      <div id="edit_user_info">
-        <el-button type="primary" icon="el-icon-edit" circle></el-button>
-      </div>
-      <div id="user_info">
-        <el-button type="primary">ADD KEY</el-button>
-      </div>
-      <div id="logput">
-        <el-button type="danger" icon="el-icon-switch-button" circle></el-button>
-      </div>
-    </div>
+    <div class="blank"></div>
   </div>
+
+
 </template>
 
 <style scoped>
@@ -54,6 +59,20 @@
   width: 92%;
 }
 
+.blank {
+  position: absolute;
+  top: 310px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 273px;
+}
 
 #show_user_info {
   width: 92%;
