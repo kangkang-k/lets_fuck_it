@@ -17,7 +17,7 @@
           <el-button type="primary" icon="el-icon-edit" circle></el-button>
         </div>
         <div id="user_info">
-          <el-button type="primary">ADD KEY</el-button>
+          <el-button type="primary">PUSH FUCK</el-button>
         </div>
         <div id="logput">
           <el-button type="danger" icon="el-icon-switch-button" circle></el-button>
