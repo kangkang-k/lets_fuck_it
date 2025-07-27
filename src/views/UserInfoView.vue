@@ -24,10 +24,20 @@
         </div>
       </div>
     </div>
-    <div class="blank"></div>
+    <div class="blank">
+      <el-card class="box-card" v-for="account in accounts" :key="account.pk">
+        <div slot="header" class="clearfix">
+          <span><b style="color: #387ce4">{{ account.fields.ex_name }}</b></span>
+          <el-button style="float: right; padding: 3px 0" type="text"><b style="color: #0a3b87">fuck it</b></el-button>
+        </div>
+        <div>
+          <p>API Key: {{ account.fields.api_key }}</p>
+          <p>API Secret: {{ account.fields.api_secret }}</p>
+          <p>Balance: {{ account.fields.balance }}</p>
+        </div>
+      </el-card>
+    </div>
   </div>
-
-
 </template>
 
 <style scoped>
@@ -64,6 +74,7 @@
   top: 310px;
   left: 20px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 10px;
@@ -72,6 +83,10 @@
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   width: 273px;
+}
+
+.box-card {
+  width: 100%;
 }
 
 #show_user_info {
@@ -85,45 +100,67 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-
 #edit_user_info,
 #logput,
 #user_info {
   display: flex;
   align-items: center;
 }
-
 </style>
 
-<script setup lang="ts">
+<script>
 import {ref, onMounted} from 'vue';
 
-const userInfo = ref({
-  username: '',
-  email: '',
-  first_name: '',
-  last_name: ''
-});
-const loading = ref(true);
-const error = ref('');
+export default {
+  setup() {
+    const userInfo = ref({
+      username: '',
+      email: '',
+      first_name: '',
+      last_name: ''
+    });
+    const accounts = ref([]);
+    const loading = ref(true);
+    const error = ref('');
 
-onMounted(async () => {
-  try {
-    const username = localStorage.getItem('username');
-    const response = await fetch(`http://127.0.0.1:8000/userapp/info/?username=${username}`);
-    if (!response.ok) {
-      throw new Error('网络响应失败');
-    }
-    const data = await response.json();
-    if (data.message === '获取成功') {
-      userInfo.value = data.data;
-    } else {
-      error.value = data.message;
-    }
-  } catch (err) {
-    error.value = '请求失败: ' + err.message;
-  } finally {
-    loading.value = false;
+    onMounted(async () => {
+      try {
+        const username = localStorage.getItem('username');
+        const userResponse = await fetch(`http://127.0.0.1:8000/userapp/info/?username=${username}`);
+        if (!userResponse.ok) {
+          throw new Error('网络响应失败');
+        }
+        const userData = await userResponse.json();
+        if (userData.message === '获取成功') {
+          userInfo.value = userData.data;
+        } else {
+          error.value = userData.message;
+        }
+
+        // 获取账户信息
+        const accountsResponse = await fetch(`http://127.0.0.1:8000/userapp/get_ex_info/?username=${username}`);
+        if (!accountsResponse.ok) {
+          throw new Error('获取账户信息失败');
+        }
+        const accountsData = await accountsResponse.json();
+        if (accountsData.message === '查询成功') {
+          accounts.value = JSON.parse(accountsData.account_infos);
+        } else {
+          error.value = accountsData.message;
+        }
+      } catch (err) {
+        error.value = '请求失败: ' + err.message;
+      } finally {
+        loading.value = false;
+      }
+    });
+
+    return {
+      userInfo,
+      accounts,
+      loading,
+      error
+    };
   }
-});
+};
 </script>
