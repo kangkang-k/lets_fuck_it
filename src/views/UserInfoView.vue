@@ -4,7 +4,6 @@
       <div id="show_user_info">
         <div v-if="loading">加载中...</div>
         <div v-else-if="error">{{ error }}</div>
-
         <div v-else>
           <p>用户名: {{ userInfo.username }}</p>
           <p>昵称: {{ userInfo.first_name }}{{ userInfo.last_name }}</p>
@@ -25,12 +24,14 @@
       </div>
     </div>
     <div class="blank">
-      <el-card class="box-card" v-for="account in accounts" :key="account.pk">
+      <el-card class="box-card" v-for="account in activeAccounts" :key="account.pk">
         <div slot="header" class="clearfix">
           <span><b style="color: #387ce4">{{ account.fields.ex_name }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{
               account.fields.balance
             }}</b></span>
-          <el-button style="float: right; padding: 3px 0" type="text"><b style="color: #0a3b87">fuck it</b></el-button>
+          <el-button style="float: right; padding: 3px 0" type="text" @click="toggleFuck(account)">
+            <b style="color: #0a3b87">fuck it</b>
+          </el-button>
         </div>
         <div>
           <p>aaa:{{ account.fields.api_key }}</p>
@@ -38,7 +39,22 @@
         </div>
       </el-card>
     </div>
-
+    <div class="fuck-list">
+      <el-card class="box-card" v-for="account in fuckedAccounts" :key="account.pk">
+        <div slot="header" class="clearfix">
+          <span><b style="color: #387ce4">{{ account.fields.ex_name }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{
+              account.fields.balance
+            }}</b></span>
+          <el-button style="float: right; padding: 3px 0" type="text" @click="toggleFuck(account)">
+            <b style="color: #0a3b87">kcuf ti</b>
+          </el-button>
+        </div>
+        <div>
+          <p>aaa:{{ account.fields.api_key }}</p>
+          <p>bbb:{{ account.fields.api_secret }}</p>
+        </div>
+      </el-card>
+    </div>
     <el-dialog title="ADD FUCK INFO" :visible.sync="dialogVisible">
       <el-form :model="formLabelAlign" label-width="80px">
         <el-form-item label="EX">
@@ -79,12 +95,20 @@ export default {
       }
     };
   },
+  computed: {
+    activeAccounts() {
+      return this.accounts.filter(account => !account.fucked);
+    },
+    fuckedAccounts() {
+      return this.accounts.filter(account => account.fucked);
+    }
+  },
   methods: {
     openPushFuckDialog() {
       this.dialogVisible = true;
     },
     logout() {
-      localStorage.clear()
+      localStorage.clear();
       this.$router.push('/');
     },
     async submitForm() {
@@ -108,7 +132,6 @@ export default {
             type: 'success'
           });
           this.dialogVisible = false;
-          // 调用 getExInfo 方法以刷新账户信息
           await this.getExInfo();
         } else {
           const data = await addResponse.json();
@@ -141,14 +164,16 @@ export default {
           this.error = userData.message;
         }
 
-        // 获取账户信息
         const accountsResponse = await fetch(`http://127.0.0.1:8000/userapp/get_ex_info/?username=${username}`);
         if (!accountsResponse.ok) {
           throw new Error('获取账户信息失败');
         }
         const accountsData = await accountsResponse.json();
         if (accountsData.message === '查询成功') {
-          this.accounts = JSON.parse(accountsData.account_infos);
+          this.accounts = JSON.parse(accountsData.account_infos).map(account => ({
+            ...account,
+            fucked: account.fucked || false // 确保每个账户都有fucked属性
+          }));
         } else {
           this.error = accountsData.message;
         }
@@ -157,6 +182,9 @@ export default {
       } finally {
         this.loading = false;
       }
+    },
+    toggleFuck(account) {
+      account.fucked = !account.fucked;
     }
   },
   mounted() {
@@ -189,6 +217,18 @@ export default {
   gap: 10px;
   padding: 10px;
   background-color: #c4e4d6;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 92%;
+}
+
+.fuck-list {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px;
+  background-color: #cacaca;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   width: 92%;
