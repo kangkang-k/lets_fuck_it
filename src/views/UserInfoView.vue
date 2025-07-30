@@ -19,7 +19,7 @@
         <div id="user_info">
           <el-button type="primary">PUSH FUCK</el-button>
         </div>
-        <div id="logput">
+        <div id="logout">
           <el-button type="danger" icon="el-icon-switch-button" circle></el-button>
         </div>
       </div>
@@ -27,13 +27,12 @@
     <div class="blank">
       <el-card class="box-card" v-for="account in accounts" :key="account.pk">
         <div slot="header" class="clearfix">
-          <span><b style="color: #387ce4">{{ account.fields.ex_name }}</b></span>
+          <span><b style="color: #387ce4">{{ account.fields.ex_name }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ account.fields.balance }}</b></span>
           <el-button style="float: right; padding: 3px 0" type="text"><b style="color: #0a3b87">fuck it</b></el-button>
         </div>
         <div>
-          <p>API Key: {{ account.fields.api_key }}</p>
-          <p>API Secret: {{ account.fields.api_secret }}</p>
-          <p>Balance: {{ account.fields.balance }}</p>
+          <p>aaa:{{ account.fields.api_key }}</p>
+          <p>bbb:{{ account.fields.api_secret }}</p>
         </div>
       </el-card>
     </div>
@@ -101,7 +100,7 @@
 }
 
 #edit_user_info,
-#logput,
+#logout,
 #user_info {
   display: flex;
   align-items: center;
