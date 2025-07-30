@@ -17,7 +17,7 @@
           <el-button type="primary" icon="el-icon-edit" circle></el-button>
         </div>
         <div id="user_info">
-          <el-button type="primary">PUSH FUCK</el-button>
+          <el-button type="primary" @click="openDialog">PUSH FUCK</el-button>
         </div>
         <div id="logout">
           <el-button type="danger" icon="el-icon-switch-button" circle></el-button>
@@ -36,8 +36,85 @@
         </div>
       </el-card>
     </div>
+
+    <el-dialog title="ADD FUCK INFO" :visible.sync="dialogVisible">
+      <el-form :model="formLabelAlign" label-width="80px">
+        <!-- 在这里添加表单项 -->
+        <el-form-item label="信息">
+          <el-input v-model="formLabelAlign.info"></el-input>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
+
+<script>
+import { ref, onMounted } from 'vue';
+
+export default {
+  setup() {
+    const userInfo = ref({
+      username: '',
+      email: '',
+      first_name: '',
+      last_name: ''
+    });
+    const accounts = ref([]);
+    const loading = ref(true);
+    const error = ref('');
+    const dialogVisible = ref(false);
+    const formLabelAlign = ref({
+      info: ''
+    });
+
+    const openDialog = () => {
+      dialogVisible.value = true;
+    };
+
+    onMounted(async () => {
+      try {
+        const username = localStorage.getItem('username');
+        const userResponse = await fetch(`http://127.0.0.1:8000/userapp/info/?username=${username}`);
+        if (!userResponse.ok) {
+          throw new Error('网络响应失败');
+        }
+        const userData = await userResponse.json();
+        if (userData.message === '获取成功') {
+          userInfo.value = userData.data;
+        } else {
+          error.value = userData.message;
+        }
+
+        // 获取账户信息
+        const accountsResponse = await fetch(`http://127.0.0.1:8000/userapp/get_ex_info/?username=${username}`);
+        if (!accountsResponse.ok) {
+          throw new Error('获取账户信息失败');
+        }
+        const accountsData = await accountsResponse.json();
+        if (accountsData.message === '查询成功') {
+          accounts.value = JSON.parse(accountsData.account_infos);
+        } else {
+          error.value = accountsData.message;
+        }
+      } catch (err) {
+        error.value = '请求失败: ' + err.message;
+      } finally {
+        loading.value = false;
+      }
+    });
+
+    return {
+      userInfo,
+      accounts,
+      loading,
+      error,
+      dialogVisible,
+      openDialog,
+      formLabelAlign
+    };
+  }
+};
+</script>
 
 <style scoped>
 .user {
@@ -106,60 +183,3 @@
   align-items: center;
 }
 </style>
-
-<script>
-import {ref, onMounted} from 'vue';
-
-export default {
-  setup() {
-    const userInfo = ref({
-      username: '',
-      email: '',
-      first_name: '',
-      last_name: ''
-    });
-    const accounts = ref([]);
-    const loading = ref(true);
-    const error = ref('');
-
-    onMounted(async () => {
-      try {
-        const username = localStorage.getItem('username');
-        const userResponse = await fetch(`http://127.0.0.1:8000/userapp/info/?username=${username}`);
-        if (!userResponse.ok) {
-          throw new Error('网络响应失败');
-        }
-        const userData = await userResponse.json();
-        if (userData.message === '获取成功') {
-          userInfo.value = userData.data;
-        } else {
-          error.value = userData.message;
-        }
-
-        // 获取账户信息
-        const accountsResponse = await fetch(`http://127.0.0.1:8000/userapp/get_ex_info/?username=${username}`);
-        if (!accountsResponse.ok) {
-          throw new Error('获取账户信息失败');
-        }
-        const accountsData = await accountsResponse.json();
-        if (accountsData.message === '查询成功') {
-          accounts.value = JSON.parse(accountsData.account_infos);
-        } else {
-          error.value = accountsData.message;
-        }
-      } catch (err) {
-        error.value = '请求失败: ' + err.message;
-      } finally {
-        loading.value = false;
-      }
-    });
-
-    return {
-      userInfo,
-      accounts,
-      loading,
-      error
-    };
-  }
-};
-</script>
