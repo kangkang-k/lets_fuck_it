@@ -20,7 +20,7 @@
           <el-button type="primary" @click="openPushFuckDialog">PUSH FUCK</el-button>
         </div>
         <div id="logout">
-          <el-button type="danger" icon="el-icon-switch-button" circle></el-button>
+          <el-button type="danger" icon="el-icon-switch-button" circle @click="logout"></el-button>
         </div>
       </div>
     </div>
@@ -82,6 +82,10 @@ export default {
   methods: {
     openPushFuckDialog() {
       this.dialogVisible = true;
+    },
+    logout() {
+      localStorage.clear()
+      this.$router.push('/');
     },
     async submitForm() {
       try {
