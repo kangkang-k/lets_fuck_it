@@ -19,41 +19,49 @@
             </div>
             <div id="user_info">
               <el-button type="primary" @click="openPushFuckDialog"
-                >PUSH FUCK</el-button
+              >PUSH FUCK
+              </el-button
               >
             </div>
             <div id="logout">
               <el-button
-                type="danger"
-                icon="el-icon-switch-button"
-                circle
-                @click="logout"
+                  type="danger"
+                  icon="el-icon-switch-button"
+                  circle
+                  @click="logout"
               ></el-button>
             </div>
           </div>
+        </div>
+        <div class="push-fuck" v-if="dialogVisible">
+          <el-card class="box-card">
+            <el-input  placeholder="hello"></el-input>
+            <el-input  placeholder="word"></el-input>
+            <el-input  placeholder="everyone"></el-input>
+          </el-card>
         </div>
       </div>
       <div class="left-bottom">
         <div class="blank">
           <el-card
-            class="box-card"
-            v-for="account in activeAccounts"
-            :key="account.pk"
+              class="box-card"
+              v-for="account in activeAccounts"
+              :key="account.pk"
           >
             <div slot="header" class="clearfix">
               <span
-                ><b style="color: #387ce4"
-                  >{{
-                    account.fields.ex_name
-                  }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{
-                    account.fields.balance
-                  }}</b
-                ></span
+              ><b style="color: #387ce4"
+              >{{
+                  account.fields.ex_name
+                }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{
+                  account.fields.balance
+                }}</b
+              ></span
               >
               <el-button
-                style="float: right; padding: 3px 0"
-                type="text"
-                @click="toggleFuck(account)"
+                  style="float: right; padding: 3px 0"
+                  type="text"
+                  @click="toggleFuck(account)"
               >
                 <b style="color: #0a3b87">fuck it</b>
               </el-button>
@@ -67,30 +75,32 @@
       </div>
     </div>
     <div class="right-box">
-      <div class="right-top"></div>
+      <div class="right-top">
+
+      </div>
       <div class="right-bottom">
         <div class="fuck-list">
           <el-card
-            class="box-card"
-            v-for="account in fuckedAccounts"
-            :key="account.pk"
+              class="box-card"
+              v-for="account in fuckedAccounts"
+              :key="account.pk"
           >
             <div slot="header" class="clearfix">
               <span
-                ><b style="color: #387ce4"
-                  >{{
-                    account.fields.ex_name
-                  }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{
-                    account.fields.balance
-                  }}</b
-                ></span
+              ><b style="color: #387ce4"
+              >{{
+                  account.fields.ex_name
+                }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{
+                  account.fields.balance
+                }}</b
+              ></span
               >
               <el-button
-                style="float: right; padding: 3px 0"
-                type="text"
-                @click="toggleFuck(account)"
+                  style="float: right; padding: 3px 0"
+                  type="text"
+                  @click="toggleFuck(account)"
               >
-                <b style="color: #0a3b87">kcuf ti</b>
+                <b style="color: #0a3b87">stop fuck</b>
               </el-button>
             </div>
             <div>
@@ -101,22 +111,6 @@
         </div>
       </div>
     </div>
-    <el-dialog title="ADD FUCK INFO" :visible.sync="dialogVisible">
-      <el-form :model="formLabelAlign" label-width="80px">
-        <el-form-item label="EX">
-          <el-input v-model="formLabelAlign.ex_name"></el-input>
-        </el-form-item>
-        <el-form-item label="KEY">
-          <el-input v-model="formLabelAlign.api_key"></el-input>
-        </el-form-item>
-        <el-form-item label="SECRET">
-          <el-input v-model="formLabelAlign.api_secret"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="submitForm">提交</el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
   </div>
 </template>
 
@@ -167,11 +161,11 @@ export default {
         formData.append("api_secret", this.formLabelAlign.api_secret);
 
         const addResponse = await fetch(
-          "http://49.234.27.225:8000/userapp/create_account_info/",
-          {
-            method: "POST",
-            body: formData,
-          }
+            "http://49.234.27.225:8000/userapp/create_account_info/",
+            {
+              method: "POST",
+              body: formData,
+            }
         );
 
         if (addResponse.ok) {
@@ -203,7 +197,7 @@ export default {
       try {
         const username = localStorage.getItem("username");
         const userResponse = await fetch(
-          `http://49.234.27.225:8000/userapp/info/?username=${username}`
+            `http://49.234.27.225:8000/userapp/info/?username=${username}`
         );
         if (!userResponse.ok) {
           throw new Error("网络响应失败");
@@ -216,7 +210,7 @@ export default {
         }
 
         const accountsResponse = await fetch(
-          `http://49.234.27.225:8000/userapp/get_ex_info/?username=${username}`
+            `http://49.234.27.225:8000/userapp/get_ex_info/?username=${username}`
         );
         if (!accountsResponse.ok) {
           throw new Error("获取账户信息失败");
@@ -224,10 +218,10 @@ export default {
         const accountsData = await accountsResponse.json();
         if (accountsData.message === "查询成功") {
           this.accounts = JSON.parse(accountsData.account_infos).map(
-            (account) => ({
-              ...account,
-              fucked: account.fucked || false, // 确保每个账户都有fucked属性
-            })
+              (account) => ({
+                ...account,
+                fucked: account.fucked || false, // 确保每个账户都有fucked属性
+              })
           );
         } else {
           this.error = accountsData.message;
@@ -248,14 +242,16 @@ export default {
 };
 </script>
 
-<style scope>
+<style scoped>
 ::-webkit-scrollbar {
   width: 2px;
   height: 2px;
 }
+
 ::-webkit-scrollbar-thumb {
   background-color: #ababab;
 }
+
 .root1 {
   height: 100%;
   width: 100%;
@@ -265,6 +261,7 @@ export default {
   padding: 20px;
   box-sizing: border-box;
 }
+
 .left-box {
   height: 100%;
   width: 300px;
@@ -272,6 +269,7 @@ export default {
   flex-direction: column;
   gap: 20px;
 }
+
 .left-top {
   height: 300px;
   width: 100%;
@@ -279,11 +277,13 @@ export default {
   align-items: center;
   justify-content: center;
 }
+
 .left-bottom {
   flex: 1;
   width: 100%;
   overflow: auto;
 }
+
 .right-box {
   height: 100%;
   flex: 1;
@@ -292,12 +292,14 @@ export default {
   gap: 20px;
   overflow: auto;
 }
+
 .right-top {
   height: 300px;
   width: 100%;
   background-color: rgb(255, 255, 255);
   border-radius: 10px;
 }
+
 .right-bottom {
   flex: 1;
   width: 100%;
@@ -305,6 +307,7 @@ export default {
   overflow: auto;
   border-radius: 10px;
 }
+
 .user {
   height: 100%;
   width: 100%;
@@ -319,6 +322,7 @@ export default {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   background-color: #ffffff;
 }
+
 
 #user {
   display: flex;
