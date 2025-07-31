@@ -223,15 +223,19 @@ export default {
 }
 
 .fuck-list {
-  display: flex;
+  position: absolute;
+  top: 20px;
+  left: 350px;
   align-items: center;
+  display: flex;
   justify-content: center;
   gap: 10px;
   padding: 10px;
   background-color: #cacaca;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  width: 92%;
+  height: 1000px;
+  width: 1600px;
 }
 
 .blank {
@@ -241,17 +245,20 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start; /* 确保卡片从顶部开始 */
   gap: 10px;
   padding: 10px;
   background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  width: 273px;
+  width: 270px;
+  height: 712px;
 }
 
+
 .box-card {
-  width: 100%;
+  width: 273px;
+  height: 173px;
 }
 
 #show_user_info {
