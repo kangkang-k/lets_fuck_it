@@ -12,7 +12,44 @@
               <p>邮箱: {{ userInfo.email }}</p>
             </div>
           </div>
-
+          <div
+              class="form animate__animated animate__bounceInDown"
+              v-if="dialogVisible"
+          >
+            <el-form :model="formLabelAlign" label-width="80px">
+              <el-form-item label="EX">
+                <el-input
+                    v-model="formLabelAlign.ex_name"
+                    size="small"
+                ></el-input>
+              </el-form-item>
+              <el-form-item label="KEY">
+                <el-input
+                    v-model="formLabelAlign.api_key"
+                    size="small"
+                ></el-input>
+              </el-form-item>
+              <el-form-item label="SECRET">
+                <el-input
+                    v-model="formLabelAlign.api_secret"
+                    size="small"
+                ></el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" @click="submitForm" size="small"
+                >提交
+                </el-button
+                >
+                <el-button
+                    type="primary"
+                    @click="dialogVisible = false"
+                    size="small"
+                >取消
+                </el-button
+                >
+              </el-form-item>
+            </el-form>
+          </div>
           <div id="user">
             <div id="edit_user_info">
               <el-button type="primary" icon="el-icon-edit" circle></el-button>
@@ -33,18 +70,11 @@
             </div>
           </div>
         </div>
-        <div class="push-fuck" v-if="dialogVisible">
-          <el-card class="box-card">
-            <el-input  placeholder="hello"></el-input>
-            <el-input  placeholder="word"></el-input>
-            <el-input  placeholder="everyone"></el-input>
-          </el-card>
-        </div>
       </div>
       <div class="left-bottom">
         <div class="blank">
           <el-card
-              class="box-card"
+              class="box-card animate__animated animate__backInDown"
               v-for="account in activeAccounts"
               :key="account.pk"
           >
@@ -75,13 +105,11 @@
       </div>
     </div>
     <div class="right-box">
-      <div class="right-top">
-
-      </div>
+      <div class="right-top"></div>
       <div class="right-bottom">
         <div class="fuck-list">
           <el-card
-              class="box-card"
+              class="box-card animate__animated animate__backInLeft"
               v-for="account in fuckedAccounts"
               :key="account.pk"
           >
@@ -100,7 +128,7 @@
                   type="text"
                   @click="toggleFuck(account)"
               >
-                <b style="color: #0a3b87">stop fuck</b>
+                <b style="color: #0a3b87">kcuf ti</b>
               </el-button>
             </div>
             <div>
@@ -111,6 +139,22 @@
         </div>
       </div>
     </div>
+    <el-dialog title="ADD FUCK INFO">
+      <el-form :model="formLabelAlign" label-width="80px">
+        <el-form-item label="EX">
+          <el-input v-model="formLabelAlign.ex_name"></el-input>
+        </el-form-item>
+        <el-form-item label="KEY">
+          <el-input v-model="formLabelAlign.api_key"></el-input>
+        </el-form-item>
+        <el-form-item label="SECRET">
+          <el-input v-model="formLabelAlign.api_secret"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="submitForm">提交</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
@@ -161,7 +205,7 @@ export default {
         formData.append("api_secret", this.formLabelAlign.api_secret);
 
         const addResponse = await fetch(
-            "http://49.234.27.225:8000/userapp/create_account_info/",
+            "http://127.0.0.1:8000/userapp/create_account_info/",
             {
               method: "POST",
               body: formData,
@@ -197,7 +241,7 @@ export default {
       try {
         const username = localStorage.getItem("username");
         const userResponse = await fetch(
-            `http://49.234.27.225:8000/userapp/info/?username=${username}`
+            `http://127.0.0.1:8000/userapp/info/?username=${username}`
         );
         if (!userResponse.ok) {
           throw new Error("网络响应失败");
@@ -210,7 +254,7 @@ export default {
         }
 
         const accountsResponse = await fetch(
-            `http://49.234.27.225:8000/userapp/get_ex_info/?username=${username}`
+            `http://127.0.0.1:8000/userapp/get_ex_info/?username=${username}`
         );
         if (!accountsResponse.ok) {
           throw new Error("获取账户信息失败");
@@ -242,7 +286,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scope>
 ::-webkit-scrollbar {
   width: 2px;
   height: 2px;
@@ -271,7 +315,7 @@ export default {
 }
 
 .left-top {
-  height: 300px;
+  height: fit-content;
   width: 100%;
   display: flex;
   align-items: center;
@@ -322,7 +366,6 @@ export default {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   background-color: #ffffff;
 }
-
 
 #user {
   display: flex;

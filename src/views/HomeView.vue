@@ -58,7 +58,7 @@ export default {
   methods: {
     async login() {
       try {
-        const response = await axios.post('http://49.234.27.225:8000/userapp/login/', {
+        const response = await axios.post('http://127.0.0.1:8000/userapp/login/', {
           username: this.account,
           password: this.password,
         });
@@ -94,7 +94,7 @@ export default {
     },
     async register() {
       try {
-        const response = await axios.post('http://49.234.27.225:8000/userapp/register/', {
+        const response = await axios.post('http://127.0.0.1:8000/userapp/register/', {
           username: this.account,
           password: this.password,
         });
